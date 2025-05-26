@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthTrack Pro - Patient Follow-Up System</title>
+    <!-- Required CSS Libraries -->
+    <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.css' rel='stylesheet' />
+    <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css' rel='stylesheet' />
+    <style>
+   
+      
+        :root {
+    --primary-color: #2A5C82;
+    --secondary-color: #5BA4E6;
+    --success-color: #4CAF50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --text-color: #333;
+    --bg-color: #f5f7fa;
+    --card-bg: #ffffff;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+  
+  body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  /* Header Styles */
+  .header {
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header h1 {
+    font-weight: 300;
+    font-size: 1.8rem;
+  }
+  
+  /* Navigation Tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    border-bottom: 2px solid #eee;
+  }
+  
+  .tab-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .tab-button.active {
+    background: var(--secondary-color);
+    color: white;
+    position: relative;
+  }
+  
+  .tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--secondary-color);
+  }
+  
+  /* Main Container */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  
+  /* Patient Management Section */
+  .patient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .patient-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+  }
+  
+  .patient-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .patient-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Forms */
+  .reminder-form {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 1.5rem 0;
+  }
+  
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+  
+  input, select, textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(91,164,230,0.1);
+  }
+  
+  /* Calendar */
+  .calendar-container {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  .fc-header-toolbar {
+    margin-bottom: 1rem !important;
+  }
+  
+  .fc-event {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .fc-event:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Analytics Section */
+  .analytics-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  .analytics-card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  /* Notification Log */
+  .notification-log {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  .log-entry {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+  }
+  
+  .log-entry:hover {
+    background-color: rgba(91,164,230,0.05);
+  }
+  
+  /* Status Indicators */
+  .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
+  
+  .status-delivered { background: var(--success-color); }
+  .status-pending { background: var(--warning-color); }
+  .status-failed { background: var(--danger-color); }
+  
+  /* Channel Selector */
+  .channel-selector {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .channel-option {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .channel-option input {
+    margin-right: 0.5rem;
+  }
+  
+  .channel-option:hover {
+    border-color: var(--secondary-color);
+  }
+  
+  /* Buttons */
+  button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    background: var(--secondary-color);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  button:hover {
+    background: var(--primary-color);
+    transform: translateY(-1px);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+    
+    .nav-tabs {
+      flex-direction: column;
+    }
+    
+    .patient-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .analytics-section {
+      grid-template-columns: 1fr;
+    }
+  }
+  .calendar-container {
+            margin: 20px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .analytics-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .channel-selector {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .channel-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .reminder-interval {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+  
+  @media (max-width: 480px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .reminder-form {
+      padding: 1rem;
+    }
+    
+    .channel-selector {
+      flex-direction: column;
+    }
+  }
+  
+  /* Utility Classes */
+  .hidden {
+    display: none !important;
+  }
+  
+  .loading-spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--secondary-color);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+      
+    </style>
+</head>
+<body>
+    <!-- Add previous header and navigation -->
+
+    <!-- Enhanced Patient Management Section -->
+     <!-- Header Section -->
+    <header class="header">
+        <h1>HealthTrack Pro</h1>
+        <nav class="nav-tabs">
+            <button class="tab-button active" onclick="switchSection('patientSection')">Patients</button>
+            <button class="tab-button" onclick="switchSection('doctorSection')">Appointments</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Patient Management Section -->
+        <div id="patientSection" class="dashboard-section active">
+            <h2>Patient Management</h2>
+            
+            <!-- Compact Registration Form with Fieldset -->
+            <div class="patient-form">
+                <fieldset>
+                    <legend>Register New Patient</legend>
+                    <form id="patientRegistrationForm" onsubmit="registerPatient(event)">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="patientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Information</label>
+                            <div class="compact-input-group">
+                                <input type="email" id="patientEmail" placeholder="Email" required>
+                                <input type="tel" id="patientPhone" placeholder="Phone" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Medical History</label>
+                            <textarea id="medicalHistory" rows="2" maxlength="500"></textarea>
+                        </div>
+                        <button type="submit">Save Patient</button>
+                    </form>
+                </fieldset>
+            </div>
+
+        <!-- Patient List -->
+        <div class="patient-grid" id="patientList"></div>
+    </div>
+
+    <!-- Enhanced Doctor Dashboard -->
+    <div id="doctorSection" class="dashboard-section">
+        <h2>Appointment Management</h2>
+        
+        <!-- Calendar View -->
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+
+        <!-- Appointment Scheduling Form -->
+        <div class="reminder-form">
+            <h3>Schedule Follow-Up</h3>
+            <form id="appointmentForm" onsubmit="scheduleAppointment(event)">
+                <div class="form-group">
+                    <label>Select Patient</label>
+                    <select id="patientSelect" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Appointment Date/Time</label>
+                    <input type="datetime-local" id="appointmentDateTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Reminder Channels</label>
+                    <div class="channel-selector">
+                        <label class="channel-option">
+                            <input type="checkbox" name="channel" value="sms"> SMS
+                        </label>
+                        <label class="channel-option">
+                            <input type="checkbox" name="channel" value="email"> Email
+                        </label>
+                        <label class="channel-option">
+                            <input type="checkbox" name="channel" value="whatsapp"> WhatsApp
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Reminder Intervals (hours before)</label>
+                    <div class="reminder-interval">
+                        <input type="number" id="reminderInterval" min="1" value="24">
+                        <button type="button" onclick="addInterval()">Add Interval</button>
+                    </div>
+                    <div id="intervalList"></div>
+                </div>
+                <button type="submit">Schedule Appointment</button>
+            </form>
+        </div>
+
+        <!-- Analytics Dashboard -->
+        <div class="analytics-section">
+            <div class="analytics-card">
+                <h3>Appointment Statistics</h3>
+                <canvas id="appointmentChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Notification Success Rates</h3>
+                <canvas id="notificationChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Notification Logs -->
+        <div class="notification-log">
+            <h3>Recent Notifications</h3>
+            <div id="notificationList"></div>
+        </div>
+    </div>
+    <!-- Footer Section -->
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>HealthTrack Pro</h4>
+            <p>Ensuring better patient outcomes through timely follow-ups</p>
+        </div>
+        <div class="footer-section">
+            <h4>Contact</h4>
+            <p>support@healthtrackpro.com<br>+1 (800) 123-4567</p>
+        </div>
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <p>Privacy Policy<br>Terms of Service</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 HealthTrack Pro. All rights reserved.</p>
+    </div>
+</footer>
+
+    <!-- Required JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
+    <script>
+        // Initialize Calendar
+        let calendar;
+        document.addEventListener('DOMContentLoaded', async () => {
+            calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridMonth',
+                events: await fetchAppointments(),
+                eventClick: function(info) {
+                    showAppointmentDetails(info.event);
+                }
+            });
+            calendar.render();
+        });
+
+        // Fetch data from backend
+        async function fetchAppointments() {
+            const res = await fetch('/api/appointments', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const appointments = await res.json();
+            return appointments.map(a => ({
+                title: `Appt with ${a.patient.name}`,
+                start: a.appointmentDate,
+                extendedProps: { ...a }
+            }));
+        }
+
+        // Patient Registration
+        async function registerPatient(e) {
+            e.preventDefault();
+            const patientData = {
+                name: document.getElementById('patientName').value,
+                email: document.getElementById('patientEmail').value,
+                phone: document.getElementById('patientPhone').value,
+                medicalHistory: document.getElementById('medicalHistory').value
+            };
+
+            try {
+                const res = await fetch('/api/patients', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(patientData)
+                });
+                if(res.ok) {
+                    updatePatientList();
+                    calendar.refetchEvents();
+                }
+            } catch (error) {
+                showError('Failed to register patient');
+            }
+        }
+
+        // Appointment Scheduling
+        async function scheduleAppointment(e) {
+            e.preventDefault();
+            const formData = {
+                patientId: document.getElementById('patientSelect').value,
+                appointmentDate: document.getElementById('appointmentDateTime').value,
+                channels: [...document.querySelectorAll('input[name="channel"]:checked')]
+                           .map(c => c.value),
+                intervals: [...document.querySelectorAll('.interval-tag')]
+                           .map(t => parseInt(t.dataset.value))
+            };
+
+            try {
+                const res = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if(res.ok) {
+                    calendar.refetchEvents();
+                    updateCharts();
+                }
+            } catch (error) {
+                showError('Failed to schedule appointment');
+            }
+        }
+
+        // Real-time Notification Updates
+        function connectToNotifications() {
+            const eventSource = new EventSource('/api/notifications/stream');
+            eventSource.onmessage = (event) => {
+                const notification = JSON.parse(event.data);
+                addNotificationToLog(notification);
+                updateCharts();
+            };
+        }
+
+        // Initialize Charts
+        let appointmentChart, notificationChart;
+        function initCharts() {
+            // Appointment Statistics Chart
+            appointmentChart = new Chart(document.getElementById('appointmentChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Scheduled', 'Completed', 'Missed'],
+                    datasets: [{
+                        label: 'Appointments',
+                        data: [0, 0, 0],
+                        backgroundColor: ['#4CAF50', '#2196F3', '#F44336']
+                    }]
+                }
+            });
+
+            // Notification Success Chart
+            notificationChart = new Chart(document.getElementById('notificationChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Delivered', 'Failed'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#4CAF50', '#F44336']
+                    }]
+                }
+            });
+        }
+
+        // Update charts with fresh data
+        async function updateCharts() {
+            const stats = await fetch('/api/appointments/stats');
+            appointmentChart.data.datasets[0].data = stats;
+            appointmentChart.update();
+            
+            const notifications = await fetch('/api/notifications/stats');
+            notificationChart.data.datasets[0].data = notifications;
+            notificationChart.update();
+        }
+
+        // Initialize the system
+        async function initializeApp() {
+            await checkAuthStatus();
+            await loadPatients();
+            initCharts();
+            connectToNotifications();
+            updateCharts();
+            setInterval(updateCharts, 300000); // Update every 5 minutes
+        }
+
+        initializeApp();
+    </script>
+</body>
+</html>
